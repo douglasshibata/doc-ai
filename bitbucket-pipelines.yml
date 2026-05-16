@@ -1,0 +1,16 @@
+image: golang:1.21
+
+pipelines:
+  branches:
+    main:
+      - step:
+          name: Generate Incremental Documentation
+          script:
+            - go install github.com/user/doc-ai@latest
+            - export GEMINI_API_KEY=$GEMINI_API_KEY
+            - doc-ai incremental .
+            - git config --global user.email "bot@example.com"
+            - git config --global user.name "DocAI Bot"
+            - git add docs/ .docai/
+            - git commit -m "docs: automatic update [skip ci]" || exit 0
+            - git push origin HEAD:main
