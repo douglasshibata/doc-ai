@@ -1,0 +1,34 @@
+name: Continuous Documentation
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  document:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Install doc-ai
+        run: go install github.com/user/doc-ai@latest
+
+      - name: Run Incremental Documentation
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: doc-ai incremental .
+
+      - name: Commit e Push da Documentação Atualizada
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action Bot"
+          git add docs/ .docai/
+          git commit -m "docs: atualização automática de cobertura [skip ci]" || exit 0
+          git push
