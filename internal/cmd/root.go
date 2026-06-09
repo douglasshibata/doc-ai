@@ -37,11 +37,24 @@ var incrementalCmd = &cobra.Command{
 		}
 
 		var provider llm.Provider
+		resolvedAPIKey := apiKey
+
 		switch providerName {
 		case "openai", "ollama":
-			provider = llm.NewOpenAIProvider(apiKey, baseURL, modelName)
+			if resolvedAPIKey == "" {
+				resolvedAPIKey = os.Getenv("OPENAI_API_KEY")
+			}
+			provider = llm.NewOpenAIProvider(resolvedAPIKey, baseURL, modelName)
 		case "gemini":
-			provider = llm.NewGeminiProvider(apiKey, modelName)
+			if resolvedAPIKey == "" {
+				resolvedAPIKey = os.Getenv("GEMINI_API_KEY")
+			}
+			provider = llm.NewGeminiProvider(resolvedAPIKey, modelName)
+		case "openrouter":
+			if resolvedAPIKey == "" {
+				resolvedAPIKey = os.Getenv("OPENROUTER_API_KEY")
+			}
+			provider = llm.NewOpenRouterProvider(resolvedAPIKey, baseURL, modelName)
 		default:
 			return fmt.Errorf("unknown provider: %s", providerName)
 		}
@@ -101,8 +114,8 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&providerName, "provider", "gemini", "AI provider (gemini, openai, ollama)")
-	rootCmd.PersistentFlags().StringVar(&apiKey, "api-key", os.Getenv("GEMINI_API_KEY"), "API Key for the provider")
+	rootCmd.PersistentFlags().StringVar(&providerName, "provider", "gemini", "AI provider (gemini, openai, ollama, openrouter)")
+	rootCmd.PersistentFlags().StringVar(&apiKey, "api-key", "", "API Key for the provider")
 	rootCmd.PersistentFlags().StringVar(&baseURL, "base-url", "", "Base URL for the provider (required for ollama)")
 	rootCmd.PersistentFlags().StringVar(&modelName, "model", "", "Model name")
 
