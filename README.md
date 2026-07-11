@@ -58,3 +58,21 @@ Use the provided `Jenkinsfile`:
 
 ---
 *Powered by AI to keep your code and docs in sync.*
+
+---
+
+## 🛠️ Project Deep Dive & Technical Guide
+
+### 🎯 Main Purpose
+Automated Documentation CLI generator for multi-language projects.
+
+### 🧰 Tecnologias Utilizadas (Tech Stack)
+- **Primary Technologies:** Go 1.24.3
+- **Deployment Strategy:** Container-ready with standard Docker/Docker Compose integrations where applicable.
+
+### 🚀 Como Implantar e Executar (How to Deploy & Run)
+#### Go CLI / Service
+1. Build the module: `go build`.
+2. Execute: `./doc-ai` (or project executable name).
+
+---
